@@ -1,0 +1,142 @@
+# [PackageDev] target_format: plist, ext: tmLanguage
+---
+name: logcat (-v ascapture)
+scopeName: source.logcat.ascapture
+fileTypes: []
+uuid: fbfb3802-6282-490b-8dea-14b7dcbe7469
+firstLineMatch: -* beginning of /dev/log/.*
+
+# this is the generic format of a log
+# https://regex101.com/r/eC3lI7/
+
+# match: '(?x)^
+#       (?:\s*(\d+:)\s*)?         # (optional) line number
+#       ([\d-]+)\s+([\d:.]+)\s+   # date, time
+#       (\d+)-(\d+)\/(.*)\s+      # pid, tid, pkgname
+#       ([VDIWEF])\/(.*?):\s+     # log type, log tag
+#       (.*)                      # log message
+#       $'
+# captures:
+#   '1': line number
+#   '2': date
+#   '3': time
+#   '4': pid
+#   '5': tid
+#   '6': pkgname
+#   '7': log type
+#   '8': log tag (note it is non greedy)
+#   '9': log message
+# captures[6] and captures[8] should be of the same scope
+
+patterns:
+- include: '#verbose'
+- include: '#debug'
+- include: '#info'
+- include: '#warn'
+- include: '#error'
+
+repository:
+  verbose:
+    patterns:
+    - name: meta.logcat.line.verbose
+      match: '(?x)^
+            (?:\s*(\d+:)\s*)?
+            ([\d-]+)\s+([\d:.]+)\s+
+            (\d+)-(\d+)\/(.*)\s+
+            ([V])\/(.*?):\s+
+            (.*)
+            $'
+      captures:
+        '1': {name: constant.numeric.logcat.line}
+        '2': {name: string.logcat.timestamp.date}
+        '3': {name: string.logcat.timestamp.time}
+        '4': {name: constant.numeric.logcat.pid}
+        '5': {name: constant.numeric.logcat.tid}
+        '6': {name: comment.logcat.pkgname}
+        '7': {name: comment.logcat.type}
+        '8': {name: entity.name.tag.logcat.tag}
+        '9': {name: comment.logcat.msg}
+
+  debug:
+    patterns:
+    - name: meta.logcat.line.debug
+      match: '(?x)^
+            (?:\s*(\d+:)\s*)?
+            ([\d-]+)\s+([\d:.]+)\s+
+            (\d+)-(\d+)\/(.*)\s+
+            ([D])\/(.*?):\s+
+            (.*)
+            $'
+      captures:
+        '1': {name: constant.numeric.logcat.line}
+        '2': {name: string.logcat.timestamp.date}
+        '3': {name: string.logcat.timestamp.time}
+        '4': {name: constant.numeric.logcat.pid}
+        '5': {name: constant.numeric.logcat.tid}
+        '6': {name: comment.logcat.pkgname}
+        '7': {name: entity.name.function.logcat.type}
+        '8': {name: entity.name.tag.logcat.tag}
+        '9': {name: entity.name.function.logcat.msg}
+
+  info:
+    patterns:
+    - name: meta.logcat.line.info
+      match: '(?x)^
+            (?:\s*(\d+:)\s*)?
+            ([\d-]+)\s+([\d:.]+)\s+
+            (\d+)-(\d+)\/(.*)\s+
+            ([I])\/(.*?):\s+
+            (.*)
+            $'
+      captures:
+        '1': {name: constant.numeric.logcat.line}
+        '2': {name: string.logcat.timestamp.date}
+        '3': {name: string.logcat.timestamp.time}
+        '4': {name: constant.numeric.logcat.pid}
+        '5': {name: constant.numeric.logcat.tid}
+        '6': {name: comment.logcat.pkgname}
+        '7': {name: entity.name.class.logcat.type}
+        '8': {name: entity.name.tag.logcat.tag}
+        '9': {name: entity.name.class.logcat.msg}
+
+  warn:
+    patterns:
+    - name: meta.logcat.line.warn
+      match: '(?x)^
+            (?:\s*(\d+:)\s*)?
+            ([\d-]+)\s+([\d:.]+)\s+
+            (\d+)-(\d+)\/(.*)\s+
+            ([W])\/(.*?):\s+
+            (.*)
+            $'
+      captures:
+        '1': {name: constant.numeric.logcat.line}
+        '2': {name: string.logcat.timestamp.date}
+        '3': {name: string.logcat.timestamp.time}
+        '4': {name: constant.numeric.logcat.pid}
+        '5': {name: constant.numeric.logcat.tid}
+        '6': {name: comment.logcat.pkgname}
+        '7': {name: keyword.logcat.type}
+        '8': {name: entity.name.tag.logcat.tag}
+        '9': {name: keyword.logcat.msg}
+
+  error:
+    patterns:
+    - name: meta.logcat.line.error
+      match: '(?x)^
+            (?:\s*(\d+:)\s*)?
+            ([\d-]+)\s+([\d:.]+)\s+
+            (\d+)-(\d+)\/(.*)\s+
+            ([EF])\/(.*?):\s+
+            (.*)
+            $'
+      captures:
+        '1': {name: constant.numeric.logcat.line}
+        '2': {name: string.logcat.timestamp.date}
+        '3': {name: string.logcat.timestamp.time}
+        '4': {name: constant.numeric.logcat.pid}
+        '5': {name: constant.numeric.logcat.tid}
+        '6': {name: comment.logcat.pkgname}
+        '7': {name: invalid.illegal.logcat.type}
+        '8': {name: entity.name.tag.logcat.tag}
+        '9': {name: invalid.illegal.logcat.msg}
